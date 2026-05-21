@@ -1,0 +1,2455 @@
+<!doctype html>
+<html lang="de" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hochzeitseinladung & RSVP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Canvas Confetti für festliche Stimmung -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Tailwind Theme-Konfiguration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              gold: {
+                50: "#FAF7F2",
+                100: "#F3EAD9",
+                200: "#E7D5B3",
+                300: "#DBBF8D",
+                400: "#CEAA67",
+                500: "#C5A880", // Boho Goldton
+                600: "#B09064",
+                700: "#94764B",
+                800: "#795E35",
+                900: "#5E4622",
+              },
+              sage: {
+                50: "#F5F7F5",
+                100: "#E5EBE5",
+                200: "#CDDCCB",
+                300: "#B1C7B0",
+                400: "#92AE91",
+                500: "#759473",
+                600: "#5C795A",
+                700: "#486046",
+              },
+              champagne: {
+                DEFAULT: "#FDFBF7",
+                dark: "#F5EFE4",
+              },
+            },
+            fontFamily: {
+              serif: ['"Playfair Display"', "serif"],
+              cursive: ['"Great Vibes"', "cursive"],
+              sans: ['"Montserrat"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Custom CSS für 3D Umschlag und Animationen -->
+    <style>
+      .perspective {
+        perspective: 1200px;
+      }
+      .preserve-3d {
+        transform-style: preserve-3d;
+      }
+      .backface-hidden {
+        backface-visibility: hidden;
+      }
+      /* Scroll Reveal Style */
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .reveal-on-scroll.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #fdfbf7;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c5a880;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#FDFBF7] text-stone-800 font-sans antialiased overflow-x-hidden"
+  >
+    <!-- INTERAKTIVES UMSCHLAG-COVER (Gated Entry) -->
+    <div
+      id="envelope-wrapper"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900 transition-opacity duration-1000 overflow-hidden"
+    >
+      <div class="relative w-[92vw] max-w-[400px] h-[520px] perspective">
+        <!-- Schatten des Umschlags -->
+        <div
+          class="absolute inset-0 bg-black/40 rounded-xl blur-2xl transform translate-y-6 scale-95"
+        ></div>
+
+        <!-- Umschlag Container -->
+        <div
+          id="envelope"
+          class="relative w-full h-full bg-[#EADBC4] rounded-lg shadow-2xl transition-transform duration-1000 preserve-3d"
+        >
+          <!-- Umschlag-Inhalt (Die Karte im Inneren) -->
+          <div
+            class="absolute inset-0 bg-[#DECCA9] rounded-lg overflow-hidden flex items-center justify-center"
+          >
+            <!-- Die Einladungskarte, die nach oben gleiten wird -->
+            <div
+              id="invitation-preview-card"
+              class="absolute w-[90%] h-[92%] bg-stone-50 rounded-md shadow-lg p-6 flex flex-col justify-between items-center text-center transition-all duration-1000 translate-y-4 z-10 border border-gold-200"
+            >
+              <div>
+                <span
+                  class="text-gold-500 text-xs tracking-[0.2em] uppercase block mb-1"
+                  >Einladung zur Hochzeit</span
+                >
+                <h3 class="font-cursive text-4xl text-gold-600 mb-2">
+                  Laura &amp; Max
+                </h3>
+                <p class="font-serif text-sm text-stone-600 italic">
+                  Wir sagen Ja!
+                </p>
+              </div>
+              <div class="w-16 h-[1px] bg-gold-300"></div>
+              <p
+                class="font-serif text-[11px] uppercase tracking-widest text-gold-700"
+              >
+                12. September 2026 • Schlossgarten
+              </p>
+              <div class="text-xs text-stone-500 italic">
+                Öffne den Brief für alle Details
+              </div>
+            </div>
+          </div>
+
+          <!-- Linke Klappe -->
+          <div
+            class="absolute inset-y-0 left-0 w-1/2 z-20"
+            style="
+              clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+              background-color: #e3d2b5;
+              border-radius: 8px 0 0 8px;
+            "
+          ></div>
+          <!-- Rechte Klappe -->
+          <div
+            class="absolute inset-y-0 right-0 w-1/2 z-20"
+            style="
+              clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
+              background-color: #e3d2b5;
+              border-radius: 0 8px 8px 0;
+            "
+          ></div>
+          <!-- Untere Klappe -->
+          <div
+            class="absolute inset-x-0 bottom-0 h-1/2 z-20"
+            style="
+              clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+              background-color: #dec5a2;
+              border-radius: 0 0 8px 8px;
+            "
+          ></div>
+
+          <!-- Obere Klappe (Klappt nach oben auf) -->
+          <div
+            id="envelope-flap"
+            class="absolute top-0 left-0 w-full h-1/2 bg-[#D4C09E] origin-top transition-transform duration-1000 z-30"
+            style="
+              clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+              border-radius: 8px 8px 0 0;
+              transform-style: preserve-3d;
+            "
+          ></div>
+
+          <!-- Siegel (Zum Öffnen klicken) -->
+          <div
+            id="wax-seal"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95 flex flex-col items-center"
+          >
+            <!-- Wachssiegel SVG -->
+            <div class="relative w-22 h-22 filter drop-shadow-md">
+              <svg
+                class="w-20 h-20 text-red-800 transition-all duration-500"
+                viewBox="0 0 100 100"
+                fill="currentColor"
+              >
+                <path
+                  d="M50 5C25.1 5 5 25.1 5 50s20.1 45 45 45 45-20.1 45-45S74.9 5 50 5z"
+                  fill="#992D2D"
+                />
+                <!-- Innerer welliger Wachsrand -->
+                <circle cx="50" cy="50" r="38" fill="#822020" />
+                <circle cx="50" cy="50" r="32" fill="#B23A3A" />
+                <circle cx="50" cy="50" r="28" fill="#992D2D" />
+                <!-- Goldenes Monogramm L&M -->
+                <text
+                  x="50"
+                  y="58"
+                  font-family="'Great Vibes', cursive"
+                  font-size="28"
+                  fill="#F3EAD9"
+                  text-anchor="middle"
+                  font-weight="bold"
+                >
+                  L&M
+                </text>
+              </svg>
+            </div>
+            <span
+              class="mt-3 px-3 py-1 text-[9px] tracking-[0.2em] text-white uppercase font-sans bg-black/50 backdrop-blur-sm rounded-full shadow-lg border border-white/20 animate-pulse"
+              >Siegel berühren</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HAUPTINHALT (Wird nach Öffnen sichtbar) -->
+    <div
+      id="main-content"
+      class="opacity-0 transition-opacity duration-1000 hidden"
+    >
+      <!-- Schwebender Musik-Player & Navigation für Mobile -->
+      <header
+        class="fixed top-0 inset-x-0 z-40 bg-white/85 backdrop-blur-md shadow-sm border-b border-stone-100 flex justify-between items-center px-6 py-4"
+      >
+        <div class="font-serif text-lg tracking-wider text-gold-600 font-bold">
+          L &amp; M
+        </div>
+        <nav
+          class="hidden md:flex space-x-6 text-xs uppercase tracking-widest font-medium"
+        >
+          <a href="#home" class="hover:text-gold-500 transition">Einladung</a>
+          <a href="#galerie" class="hover:text-gold-500 transition">Momente</a>
+          <a href="#zeitplan" class="hover:text-gold-500 transition">Ablauf</a>
+          <a href="#infos" class="hover:text-gold-500 transition">Details</a>
+          <a
+            href="#rsvp"
+            class="bg-gold-500 text-white px-4 py-2 rounded-full hover:bg-gold-600 transition"
+            >RSVP</a
+          >
+        </nav>
+        <button
+          id="audio-toggle-btn"
+          class="flex items-center gap-2 bg-stone-100 px-3 py-1.5 rounded-full text-xs font-medium text-stone-600 hover:bg-gold-50 transition"
+        >
+          <svg
+            id="music-on-icon"
+            class="w-4 h-4 text-gold-500 animate-spin-slow"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+            />
+          </svg>
+          <span id="music-status">Musik</span>
+        </button>
+      </header>
+
+      <!-- FLOATING BOTTOM NAVIGATION BAR (Perfekt für Mobile Daumenbedienung) -->
+      <div
+        class="fixed bottom-4 inset-x-4 z-40 md:hidden flex justify-around bg-white/90 backdrop-blur-lg py-3 px-4 rounded-full shadow-2xl border border-stone-200"
+      >
+        <a
+          href="#home"
+          class="flex flex-col items-center gap-0.5 text-stone-500 hover:text-gold-500"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+          <span class="text-[9px] uppercase tracking-wider font-semibold"
+            >Start</span
+          >
+        </a>
+        <a
+          href="#galerie"
+          class="flex flex-col items-center gap-0.5 text-stone-500 hover:text-gold-500"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <span class="text-[9px] uppercase tracking-wider font-semibold"
+            >Fotos</span
+          >
+        </a>
+        <a
+          href="#zeitplan"
+          class="flex flex-col items-center gap-0.5 text-stone-500 hover:text-gold-500"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span class="text-[9px] uppercase tracking-wider font-semibold"
+            >Ablauf</span
+          >
+        </a>
+        <a
+          href="#rsvp"
+          class="flex flex-col items-center gap-0.5 text-gold-500 hover:text-gold-600"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+            />
+          </svg>
+          <span class="text-[9px] uppercase tracking-wider font-bold"
+            >Antwort</span
+          >
+        </a>
+      </div>
+
+      <!-- HERO SEKTION MIT CINEMATIC VIDEO BACKGROUND -->
+      <section
+        id="home"
+        class="relative min-h-[92vh] flex items-center justify-center pt-20 overflow-hidden bg-stone-900 text-white"
+      >
+        <!-- Video-Hintergrund -->
+        <div class="absolute inset-0 opacity-40 z-0">
+          <video
+            autoplay
+            loop
+            muted
+            playsinline
+            class="w-full h-full object-cover"
+          >
+            <!-- Schöner, feierlicher Hochzeitsvideo-Loop -->
+            <source
+              src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-couple-holding-each-other-40156-large.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Dunkler Verlauf für Lesbarkeit -->
+        <div
+          class="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-900/60 to-[#FDFBF7] z-10"
+        ></div>
+
+        <div class="relative z-20 text-center px-4 max-w-2xl mt-8">
+          <span
+            class="text-gold-300 text-xs sm:text-sm tracking-[0.3em] uppercase block mb-3 animate-pulse"
+            >Save the Date</span
+          >
+          <h1
+            class="font-cursive text-7xl sm:text-8xl md:text-9xl text-gold-100 mb-4 drop-shadow-md"
+          >
+            Laura &amp; Max
+          </h1>
+          <p
+            class="font-serif text-lg sm:text-2xl text-stone-200 tracking-wider mb-8 italic"
+          >
+            Wir laden dich herzlich zu unserem großen Tag ein!
+          </p>
+          <div
+            class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 mb-10"
+          >
+            <span
+              class="font-serif tracking-widest text-sm uppercase text-gold-200"
+              >12. September 2026 • Konstanz</span
+            >
+          </div>
+
+          <!-- Countdown -->
+          <div class="grid grid-cols-4 gap-2 max-w-md mx-auto">
+            <div
+              class="bg-black/30 backdrop-blur-md rounded-xl p-3 border border-white/10"
+            >
+              <span
+                id="countdown-days"
+                class="block font-serif text-2xl sm:text-3xl text-gold-300 font-bold"
+                >00</span
+              >
+              <span class="text-[10px] uppercase tracking-widest text-stone-300"
+                >Tage</span
+              >
+            </div>
+            <div
+              class="bg-black/30 backdrop-blur-md rounded-xl p-3 border border-white/10"
+            >
+              <span
+                id="countdown-hours"
+                class="block font-serif text-2xl sm:text-3xl text-gold-300 font-bold"
+                >00</span
+              >
+              <span class="text-[10px] uppercase tracking-widest text-stone-300"
+                >Std</span
+              >
+            </div>
+            <div
+              class="bg-black/30 backdrop-blur-md rounded-xl p-3 border border-white/10"
+            >
+              <span
+                id="countdown-minutes"
+                class="block font-serif text-2xl sm:text-3xl text-gold-300 font-bold"
+                >00</span
+              >
+              <span class="text-[10px] uppercase tracking-widest text-stone-300"
+                >Min</span
+              >
+            </div>
+            <div
+              class="bg-black/30 backdrop-blur-md rounded-xl p-3 border border-white/10"
+            >
+              <span
+                id="countdown-seconds"
+                class="block font-serif text-2xl sm:text-3xl text-gold-300 font-bold"
+                >00</span
+              >
+              <span class="text-[10px] uppercase tracking-widest text-stone-300"
+                >Sek</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- UNSERE GESCHICHTE & INTERAKTIVE GALERIE -->
+      <section id="galerie" class="py-20 px-6 max-w-5xl mx-auto">
+        <div class="text-center mb-16 reveal-on-scroll">
+          <span class="text-gold-500 font-cursive text-3xl block mb-2"
+            >Momente der Liebe</span
+          >
+          <h2
+            class="font-serif text-3xl sm:text-4xl uppercase tracking-wider text-stone-800"
+          >
+            Unsere Galerie
+          </h2>
+          <div class="w-16 h-[2px] bg-gold-400 mx-auto mt-4"></div>
+        </div>
+
+        <!-- Galerie Grid mit echten, romantischen Hochzeits-Vibe Unsplash Fotos -->
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 reveal-on-scroll"
+        >
+          <!-- Foto 1 -->
+          <div
+            class="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer shadow-md shadow-stone-100/50"
+            onclick="
+              openLightbox(
+                'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=1200',
+              )
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=600"
+              alt="Unser Verlobungs-Moment"
+              class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+              onerror="
+                this.src = 'https://placehold.co/600x800/DEC5A2/FFFFFF?text=L&M'
+              "
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4"
+            >
+              <span class="text-xs text-white uppercase tracking-wider"
+                >Verlobung</span
+              >
+            </div>
+          </div>
+          <!-- Foto 2 -->
+          <div
+            class="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer shadow-md shadow-stone-100/50"
+            onclick="
+              openLightbox(
+                'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1200',
+              )
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=600"
+              alt="Der Antrag"
+              class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+              onerror="
+                this.src = 'https://placehold.co/600x800/E5EBE5/FFFFFF?text=L&M'
+              "
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4"
+            >
+              <span class="text-xs text-white uppercase tracking-wider"
+                >Der Ring</span
+              >
+            </div>
+          </div>
+          <!-- Foto 3 -->
+          <div
+            class="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer shadow-md shadow-stone-100/50"
+            onclick="
+              openLightbox(
+                'https://images.unsplash.com/photo-1519225495810-7512c696505a?auto=format&fit=crop&q=80&w=1200',
+              )
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519225495810-7512c696505a?auto=format&fit=crop&q=80&w=600"
+              alt="Glücksmomente"
+              class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+              onerror="
+                this.src = 'https://placehold.co/600x800/E7D5B3/FFFFFF?text=L&M'
+              "
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4"
+            >
+              <span class="text-xs text-white uppercase tracking-wider"
+                >Vorfreude</span
+              >
+            </div>
+          </div>
+          <!-- Foto 4 -->
+          <div
+            class="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer shadow-md shadow-stone-100/50"
+            onclick="
+              openLightbox(
+                'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=1200',
+              )
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=600"
+              alt="Der Kuss"
+              class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+              onerror="
+                this.src = 'https://placehold.co/600x800/B1C7B0/FFFFFF?text=L&M'
+              "
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4"
+            >
+              <span class="text-xs text-white uppercase tracking-wider"
+                >Zweisamkeit</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Romantischer Video-Teaser Player -->
+        <div
+          class="bg-stone-50 rounded-3xl p-6 sm:p-10 border border-stone-100 shadow-xl shadow-stone-200/40 reveal-on-scroll"
+        >
+          <div class="max-w-xl mx-auto text-center mb-8">
+            <h3 class="font-serif text-2xl text-stone-800 tracking-wider mb-2">
+              Unser Teaser-Video
+            </h3>
+            <p class="text-sm text-stone-500">
+              Ein kleiner filmischer Einblick in unsere gemeinsame Reise und die
+              Hochzeits-Preparation.
+            </p>
+          </div>
+          <div
+            class="relative aspect-video w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl bg-stone-900 border border-stone-200"
+          >
+            <video
+              id="teaser-video"
+              controls
+              class="w-full h-full object-cover"
+              poster="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1200"
+            >
+              <source
+                src="https://assets.mixkit.co/videos/preview/mixkit-beautiful-wedding-rings-on-a-table-40439-large.mp4"
+                type="video/mp4"
+              />
+              Ihr Browser unterstützt keine HTML5 Videos.
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIGHTBOX (FÜR BILDERVERGRÖSSERUNG) -->
+      <div
+        id="lightbox"
+        class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300"
+        onclick="closeLightbox()"
+      >
+        <button
+          class="absolute top-6 right-6 text-white text-3xl hover:text-gold-400"
+          onclick="closeLightbox()"
+        >
+          &times;
+        </button>
+        <img
+          id="lightbox-img"
+          class="max-w-full max-h-[85vh] rounded-lg shadow-2xl transform scale-90 transition-transform duration-300"
+          src=""
+          alt="Großansicht"
+        />
+      </div>
+
+      <!-- TAGESABLAUF / ZEITPLAN -->
+      <section id="zeitplan" class="bg-stone-100/50 py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-16 reveal-on-scroll">
+            <span class="text-gold-500 font-cursive text-3xl block mb-2"
+              >Wie wir feiern</span
+            >
+            <h2
+              class="font-serif text-3xl sm:text-4xl uppercase tracking-wider text-stone-800"
+            >
+              Der Ablauf
+            </h2>
+            <div class="w-16 h-[2px] bg-gold-400 mx-auto mt-4"></div>
+          </div>
+
+          <div
+            class="relative border-l-2 border-gold-300/60 ml-4 sm:ml-32 md:ml-40 space-y-12"
+          >
+            <!-- Event 1 -->
+            <div class="relative pl-8 sm:pl-12 reveal-on-scroll">
+              <div
+                class="absolute -left-3.5 bg-gold-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-4 border-white shadow-md"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div
+                class="absolute left-[-110px] sm:left-[-140px] top-0 hidden sm:block text-right w-24"
+              >
+                <span class="block font-serif text-lg font-bold text-stone-800"
+                  >14:00 Uhr</span
+                >
+                <span
+                  class="text-xs uppercase tracking-widest text-gold-600 font-semibold"
+                  >Trauung</span
+                >
+              </div>
+              <div
+                class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200/50"
+              >
+                <span
+                  class="sm:hidden block font-serif text-sm font-bold text-gold-500 mb-1"
+                  >14:00 Uhr • Trauung</span
+                >
+                <h3 class="font-serif text-xl text-stone-800 mb-2">
+                  Kirchliche Trauung
+                </h3>
+                <p class="text-sm text-stone-500">
+                  Wir geben uns das Ja-Wort in der malerischen Schlosskapelle am
+                  Bodensee.
+                </p>
+              </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="relative pl-8 sm:pl-12 reveal-on-scroll">
+              <div
+                class="absolute -left-3.5 bg-gold-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-4 border-white shadow-md"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div
+                class="absolute left-[-110px] sm:left-[-140px] top-0 hidden sm:block text-right w-24"
+              >
+                <span class="block font-serif text-lg font-bold text-stone-800"
+                  >15:30 Uhr</span
+                >
+                <span
+                  class="text-xs uppercase tracking-widest text-gold-600 font-semibold"
+                  >Empfang</span
+                >
+              </div>
+              <div
+                class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200/50"
+              >
+                <span
+                  class="sm:hidden block font-serif text-sm font-bold text-gold-500 mb-1"
+                  >15:30 Uhr • Empfang</span
+                >
+                <h3 class="font-serif text-xl text-stone-800 mb-2">
+                  Sektempfang &amp; Anschnitt
+                </h3>
+                <p class="text-sm text-stone-500">
+                  Anstoßen auf die Liebe im Schlosspark mitsamt traditionellem
+                  Anschnitt der Hochzeitstorte.
+                </p>
+              </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div class="relative pl-8 sm:pl-12 reveal-on-scroll">
+              <div
+                class="absolute -left-3.5 bg-gold-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-4 border-white shadow-md"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              </div>
+              <div
+                class="absolute left-[-110px] sm:left-[-140px] top-0 hidden sm:block text-right w-24"
+              >
+                <span class="block font-serif text-lg font-bold text-stone-800"
+                  >18:00 Uhr</span
+                >
+                <span
+                  class="text-xs uppercase tracking-widest text-gold-600 font-semibold"
+                  >Dinner</span
+                >
+              </div>
+              <div
+                class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200/50"
+              >
+                <span
+                  class="sm:hidden block font-serif text-sm font-bold text-gold-500 mb-1"
+                  >18:00 Uhr • Dinner</span
+                >
+                <h3 class="font-serif text-xl text-stone-800 mb-2">
+                  Festliches Hochzeitsdinner
+                </h3>
+                <p class="text-sm text-stone-500">
+                  Gemeinsames Schlemmen im feierlich beleuchteten Rittersaal des
+                  Schlosses.
+                </p>
+              </div>
+            </div>
+
+            <!-- Event 4 -->
+            <div class="relative pl-8 sm:pl-12 reveal-on-scroll">
+              <div
+                class="absolute -left-3.5 bg-gold-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-4 border-white shadow-md"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                  />
+                </svg>
+              </div>
+              <div
+                class="absolute left-[-110px] sm:left-[-140px] top-0 hidden sm:block text-right w-24"
+              >
+                <span class="block font-serif text-lg font-bold text-stone-800"
+                  >21:00 Uhr</span
+                >
+                <span
+                  class="text-xs uppercase tracking-widest text-gold-600 font-semibold"
+                  >Party</span
+                >
+              </div>
+              <div
+                class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200/50"
+              >
+                <span
+                  class="sm:hidden block font-serif text-sm font-bold text-gold-500 mb-1"
+                  >21:00 Uhr • Party</span
+                >
+                <h3 class="font-serif text-xl text-stone-800 mb-2">
+                  Eröffnungstanz &amp; Party
+                </h3>
+                <p class="text-sm text-stone-500">
+                  Die Tanzfläche ist eröffnet! Wir feiern, tanzen und lachen bis
+                  in die frühen Morgenstunden.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DETAILS & FAQ SEKTION -->
+      <section id="infos" class="py-20 px-6 max-w-4xl mx-auto">
+        <div class="text-center mb-16 reveal-on-scroll">
+          <span class="text-gold-500 font-cursive text-3xl block mb-2"
+            >Gut zu wissen</span
+          >
+          <h2
+            class="font-serif text-3xl sm:text-4xl uppercase tracking-wider text-stone-800"
+          >
+            Wichtige Infos
+          </h2>
+          <div class="w-16 h-[2px] bg-gold-400 mx-auto mt-4"></div>
+        </div>
+
+        <!-- FAQ Accordion Layout -->
+        <div class="space-y-4 reveal-on-scroll">
+          <!-- FAQ 1 -->
+          <div
+            class="border border-stone-200 rounded-2xl bg-white overflow-hidden transition-all duration-300"
+          >
+            <button
+              class="w-full flex justify-between items-center p-6 text-left font-serif text-lg text-stone-800 font-semibold hover:bg-stone-50 transition"
+              onclick="toggleFaq(this)"
+            >
+              <span>Dresscode</span>
+              <svg
+                class="w-5 h-5 text-gold-500 transform transition-transform duration-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              class="max-h-0 overflow-hidden transition-all duration-500 ease-out"
+            >
+              <p
+                class="p-6 pt-0 text-sm text-stone-500 leading-relaxed border-t border-stone-100"
+              >
+                Wir wünschen uns festliche, sommerlich-elegante Garderobe. Damen
+                dürfen gerne in hellen, floralen Farben erscheinen (Weiß- und
+                Cremetöne sind traditionell der Braut vorbehalten). Herren
+                kleiden sich stilvoll im Anzug oder im edlen Sommer-Zweiteiler.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div
+            class="border border-stone-200 rounded-2xl bg-white overflow-hidden transition-all duration-300"
+          >
+            <button
+              class="w-full flex justify-between items-center p-6 text-left font-serif text-lg text-stone-800 font-semibold hover:bg-stone-50 transition"
+              onclick="toggleFaq(this)"
+            >
+              <span>Geschenkwünsche</span>
+              <svg
+                class="w-5 h-5 text-gold-500 transform transition-transform duration-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              class="max-h-0 overflow-hidden transition-all duration-500 ease-out"
+            >
+              <p
+                class="p-6 pt-0 text-sm text-stone-500 leading-relaxed border-t border-stone-100"
+              >
+                Unsere Haushaltskasse ist bereits bestens gefüllt und wir haben
+                alles, was wir brauchen. Am allermeisten würden wir uns über
+                einen finanziellen Beitrag zu unserer Traum-Hochzeitsreise auf
+                die Malediven freuen.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div
+            class="border border-stone-200 rounded-2xl bg-white overflow-hidden transition-all duration-300"
+          >
+            <button
+              class="w-full flex justify-between items-center p-6 text-left font-serif text-lg text-stone-800 font-semibold hover:bg-stone-50 transition"
+              onclick="toggleFaq(this)"
+            >
+              <span>Übernachtungsmöglichkeiten</span>
+              <svg
+                class="w-5 h-5 text-gold-500 transform transition-transform duration-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              class="max-h-0 overflow-hidden transition-all duration-500 ease-out"
+            >
+              <p
+                class="p-6 pt-0 text-sm text-stone-500 leading-relaxed border-t border-stone-100"
+              >
+                Wir haben im "Seehotel Konstanz" und im "Lakeside Inn" ein
+                begrenztes Zimmerkontingent zu Sonderkonditionen blockiert. Bei
+                der Buchung einfach das Kennwort "HochzeitLauraMax" angeben, um
+                den Rabatt zu erhalten.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RSVP / ANTWORT FORMULAR -->
+      <section id="rsvp" class="bg-gold-50 py-20 px-6 border-t border-gold-200">
+        <div class="max-w-xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="text-gold-500 font-cursive text-3xl block mb-2"
+              >Für uns planbar</span
+            >
+            <h2
+              class="font-serif text-3xl sm:text-4xl uppercase tracking-wider text-stone-800"
+            >
+              Deine RSVP
+            </h2>
+            <p class="text-xs text-stone-500 mt-2">
+              Bitte gib uns bis zum 15. Juli 2026 eine Rückmeldung.
+            </p>
+            <div class="w-16 h-[2px] bg-gold-400 mx-auto mt-4"></div>
+          </div>
+
+          <!-- FORM CONTAINER -->
+          <div
+            class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border border-stone-100"
+          >
+            <form
+              id="rsvpForm"
+              class="space-y-6"
+              onsubmit="handleFormSubmit(event)"
+            >
+              <!-- Vorname & Nachname -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    for="firstName"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Vorname *</label
+                  >
+                  <input
+                    type="text"
+                    id="firstName"
+                    required
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    placeholder="Max"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="lastName"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Nachname *</label
+                  >
+                  <input
+                    type="text"
+                    id="lastName"
+                    required
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    placeholder="Mustermann"
+                  />
+                </div>
+              </div>
+
+              <!-- Zusage / Absage Option -->
+              <div>
+                <label
+                  class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-3"
+                  >Wirst du kommen? *</label
+                >
+                <div class="grid grid-cols-2 gap-3">
+                  <label
+                    class="border-2 border-stone-200 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gold-50/50 transition relative"
+                    id="attendanceYesLabel"
+                  >
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value="ja"
+                      checked
+                      class="absolute top-3 right-3 accent-gold-500 w-4 h-4"
+                      onchange="toggleAttendanceFields(true)"
+                    />
+                    <span class="text-2xl mb-1">🥳</span>
+                    <span class="text-sm font-semibold text-stone-700"
+                      >Ich bin dabei!</span
+                    >
+                  </label>
+                  <label
+                    class="border-2 border-stone-200 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-stone-50 transition relative"
+                    id="attendanceNoLabel"
+                  >
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value="nein"
+                      class="absolute top-3 right-3 accent-gold-500 w-4 h-4"
+                      onchange="toggleAttendanceFields(false)"
+                    />
+                    <span class="text-2xl mb-1">🥺</span>
+                    <span class="text-sm font-semibold text-stone-700"
+                      >Leider nein</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <!-- DIESE FELDER WERDEN NUR BEI ZUSAGE GEZEIGT -->
+              <div
+                id="zusage-only-fields"
+                class="space-y-6 transition-all duration-300"
+              >
+                <!-- Begleitperson -->
+                <div>
+                  <label
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-3"
+                    >Kommst du mit Begleitung?</label
+                  >
+                  <div class="flex gap-4">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer text-sm"
+                    >
+                      <input
+                        type="radio"
+                        name="hasCompanion"
+                        value="nein"
+                        checked
+                        class="accent-gold-500 w-4 h-4"
+                        onchange="toggleCompanionFields(false)"
+                      />
+                      <span>Allein</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer text-sm"
+                    >
+                      <input
+                        type="radio"
+                        name="hasCompanion"
+                        value="ja"
+                        class="accent-gold-500 w-4 h-4"
+                        onchange="toggleCompanionFields(true)"
+                      />
+                      <span>Ja, in Begleitung</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Name der Begleitung -->
+                <div
+                  id="companion-name-field"
+                  class="hidden transition-all duration-300"
+                >
+                  <label
+                    for="companionName"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Name der Begleitung *</label
+                  >
+                  <input
+                    type="text"
+                    id="companionName"
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    placeholder="Name der Begleitung"
+                  />
+                </div>
+
+                <!-- Essenswunsch -->
+                <div>
+                  <label
+                    for="diet"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Dein Essenswunsch</label
+                  >
+                  <select
+                    id="diet"
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    onchange="toggleDietOther(this.value)"
+                  >
+                    <option value="alles">Allesesser (Klassisches Menü)</option>
+                    <option value="vegetarisch">Vegetarisch</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="allergie">Allergien / Sonstiges</option>
+                  </select>
+                </div>
+
+                <!-- Allergien / Sonstige Essenswünsche -->
+                <div
+                  id="diet-other-field"
+                  class="hidden transition-all duration-300"
+                >
+                  <label
+                    for="dietDetails"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Details zu deinen Unverträglichkeiten</label
+                  >
+                  <input
+                    type="text"
+                    id="dietDetails"
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    placeholder="Z.B. Laktosefrei, kein Fisch..."
+                  />
+                </div>
+
+                <!-- Songwunsch -->
+                <div>
+                  <label
+                    for="songRequest"
+                    class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                    >Dein Songwunsch für die Tanzfläche</label
+                  >
+                  <input
+                    type="text"
+                    id="songRequest"
+                    class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                    placeholder="Interpret - Songtitel"
+                  />
+                </div>
+              </div>
+
+              <!-- Persönliche Nachricht -->
+              <div>
+                <label
+                  for="message"
+                  class="block text-xs uppercase tracking-wider text-stone-600 font-semibold mb-2"
+                  >Nachricht an das Brautpaar</label
+                >
+                <textarea
+                  id="message"
+                  rows="3"
+                  class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-sm"
+                  placeholder="Liebe Laura, lieber Max..."
+                ></textarea>
+              </div>
+
+              <!-- Absenden Button -->
+              <button
+                type="submit"
+                class="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-95 flex justify-center items-center gap-2"
+              >
+                <span id="submit-btn-text">Antwort absenden</span>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </button>
+            </form>
+
+            <!-- DANKE / ERFOLGSZUSTAND -->
+            <div id="thankYouState" class="hidden text-center py-8">
+              <div
+                class="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl"
+              >
+                🎉
+              </div>
+              <h3 class="font-serif text-2xl text-stone-800 mb-2">
+                Herzlichen Dank!
+              </h3>
+              <p class="text-sm text-stone-500 mb-6 max-w-sm mx-auto">
+                Deine Antwort wurde erfolgreich übermittelt. Wir freuen uns
+                riesig auf das Fest mit dir!
+              </p>
+              <button
+                onclick="resetFormState()"
+                class="text-xs text-gold-500 underline uppercase tracking-widest font-semibold hover:text-gold-600 transition"
+              >
+                Eine weitere Antwort abgeben
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER & ADMIN LOGIN BUTTON -->
+      <footer
+        class="bg-stone-900 text-stone-300 py-16 px-6 text-center border-t border-stone-850"
+      >
+        <div class="max-w-md mx-auto">
+          <h3 class="font-cursive text-5xl text-gold-100 mb-2">
+            Laura &amp; Max
+          </h3>
+          <p class="text-xs uppercase tracking-[0.2em] text-gold-500 mb-6">
+            Wir heiraten am 12.09.2026
+          </p>
+          <p class="text-[11px] text-stone-500 mb-8 leading-relaxed">
+            Solltest du Fragen haben, wende dich gerne direkt an unsere
+            Trauzeugen.<br />© 2026 Laura &amp; Max Wedding Invitation.
+          </p>
+
+          <!-- Admin-Dashboard Trigger -->
+          <button
+            onclick="toggleAdminPanel()"
+            class="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest bg-stone-800 hover:bg-stone-750 text-stone-400 px-4 py-2 rounded-full border border-stone-700/50 transition"
+          >
+            <svg
+              class="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            <span>Veranstalter-Ansicht (Eingegangene RSVP)</span>
+          </button>
+        </div>
+      </footer>
+
+      <!-- VERSTECKTER ADMINBEREICH (Cockpit) -->
+      <section
+        id="adminPanel"
+        class="hidden fixed inset-0 z-50 bg-stone-950/90 backdrop-blur-md overflow-y-auto p-4 sm:p-6 flex items-center justify-center"
+      >
+        <div
+          class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden my-8 border border-stone-200"
+        >
+          <!-- Header -->
+          <div
+            class="bg-stone-900 text-white p-6 flex justify-between items-center border-b border-stone-800"
+          >
+            <div>
+              <h2 class="font-serif text-2xl text-gold-100">RSVP Cockpit</h2>
+              <p
+                class="text-[10px] uppercase tracking-widest text-stone-400 mt-1"
+              >
+                Live-Gästeliste &amp; Statistiken
+              </p>
+            </div>
+            <button
+              onclick="closeAdminPanel()"
+              class="text-stone-400 hover:text-white text-2xl transition"
+            >
+              &times;
+            </button>
+          </div>
+
+          <!-- Live Statistiken Grid -->
+          <div
+            class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-stone-50 border-b border-stone-200"
+          >
+            <div
+              class="bg-white p-4 rounded-2xl border border-stone-200 text-center"
+            >
+              <span class="block text-2xl mb-1">👥</span>
+              <span
+                class="text-[10px] uppercase tracking-widest text-stone-500 block"
+                >Gäste gesamt</span
+              >
+              <span id="statsTotal" class="text-2xl font-bold text-stone-800"
+                >0</span
+              >
+            </div>
+            <div
+              class="bg-white p-4 rounded-2xl border border-stone-200 text-center"
+            >
+              <span class="block text-2xl mb-1">✅</span>
+              <span
+                class="text-[10px] uppercase tracking-widest text-stone-500 block"
+                >Zusagen (Ja)</span
+              >
+              <span id="statsYes" class="text-2xl font-bold text-green-600"
+                >0</span
+              >
+            </div>
+            <div
+              class="bg-white p-4 rounded-2xl border border-stone-200 text-center"
+            >
+              <span class="block text-2xl mb-1">❌</span>
+              <span
+                class="text-[10px] uppercase tracking-widest text-stone-500 block"
+                >Absagen (Nein)</span
+              >
+              <span id="statsNo" class="text-2xl font-bold text-red-500"
+                >0</span
+              >
+            </div>
+            <div
+              class="bg-white p-4 rounded-2xl border border-stone-200 text-center"
+            >
+              <span class="block text-2xl mb-1">🌱</span>
+              <span
+                class="text-[10px] uppercase tracking-widest text-stone-500 block"
+                >Besondere Diäten</span
+              >
+              <span id="statsDiet" class="text-2xl font-bold text-gold-600"
+                >0</span
+              >
+            </div>
+          </div>
+
+          <!-- Google Sheets Integration Card -->
+          <div class="p-6 bg-stone-50 border-b border-stone-200">
+            <h3
+              class="font-serif text-lg text-stone-800 mb-1 flex items-center gap-2"
+            >
+              <span>📊 Google Sheets Anbindung</span>
+            </h3>
+            <p class="text-xs text-stone-500 mb-4">
+              Verbinden Sie Ihre Google Tabelle, um alle eingegangenen RSVPs
+              live in ein Dokument eintragen zu lassen.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                id="googleSheetUrlInput"
+                placeholder="https://script.google.com/macros/s/.../exec"
+                class="flex-1 px-4 py-3 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 text-xs"
+              />
+              <button
+                onclick="saveGoogleSheetSettings()"
+                class="bg-gold-500 hover:bg-gold-600 text-white text-xs uppercase tracking-widest font-bold px-6 py-3 rounded-xl shadow-md transition whitespace-nowrap"
+              >
+                Speichern &amp; Verbinden
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div
+            class="p-6 border-b border-stone-100 flex flex-wrap gap-4 justify-between items-center"
+          >
+            <div class="flex items-center gap-2">
+              <span
+                class="text-xs font-semibold text-stone-600 uppercase tracking-wider"
+                >Datenquelle:</span
+              >
+              <span
+                id="dbSourceIndicator"
+                class="bg-green-100 text-green-800 text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full border border-green-200"
+                >Verbinde...</span
+              >
+            </div>
+            <div class="flex gap-2 w-full sm:w-auto">
+              <button
+                onclick="exportToCsv()"
+                class="flex-1 sm:flex-initial bg-gold-500 hover:bg-gold-600 text-white text-xs uppercase tracking-widest font-bold px-5 py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                <span>CSV Export</span>
+              </button>
+              <button
+                onclick="generateTestData()"
+                class="flex-1 sm:flex-initial bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs uppercase tracking-widest font-semibold px-4 py-3 rounded-xl transition"
+              >
+                Testdaten
+              </button>
+            </div>
+          </div>
+
+          <!-- RSVPs Liste -->
+          <div class="p-6 max-h-[50vh] overflow-y-auto">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="border-b border-stone-200 text-[10px] uppercase tracking-widest text-stone-400 font-semibold"
+                  >
+                    <th class="pb-3 pl-2">Gast / Begleitung</th>
+                    <th class="pb-3">Status</th>
+                    <th class="pb-3">Essenswunsch</th>
+                    <th class="pb-3">Musikwunsch</th>
+                    <th class="pb-3">Nachricht / Notiz</th>
+                    <th class="pb-3 text-right">Aktion</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="adminRsvpList"
+                  class="divide-y divide-stone-100 text-sm text-stone-600"
+                >
+                  <tr>
+                    <td colspan="6" class="text-center py-10 text-stone-400">
+                      Keine RSVPs vorhanden.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SICHERHEITS-PASSWORT-MODAL (Kein unschöner Browser-Alert) -->
+      <div
+        id="adminAuthModal"
+        class="hidden fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+      >
+        <div
+          class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 sm:p-8 border border-stone-200 text-center"
+        >
+          <div
+            class="w-12 h-12 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+          </div>
+          <h3 class="font-serif text-xl text-stone-800 mb-2">
+            Veranstalter-Verifizierung
+          </h3>
+          <p class="text-xs text-stone-500 mb-6">
+            Bitte gib das Admin-Passwort ein, um auf die Gästedaten zuzugreifen.
+          </p>
+
+          <input
+            type="password"
+            id="adminPasswordInput"
+            class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-gold-400 text-center tracking-widest font-bold"
+            placeholder="••••••••"
+          />
+          <p id="adminAuthError" class="text-red-500 text-xs mb-4 hidden">
+            Falsches Passwort. Bitte erneut versuchen.
+          </p>
+
+          <div class="flex gap-2">
+            <button
+              onclick="closeAuthModal()"
+              class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold py-3 rounded-xl text-sm transition"
+            >
+              Abbrechen
+            </button>
+            <button
+              onclick="verifyAdminPassword()"
+              class="flex-1 bg-gold-500 hover:bg-gold-600 text-white font-semibold py-3 rounded-xl text-sm transition"
+            >
+              Bestätigen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM DELETE CONFIRMATION MODAL -->
+      <div
+        id="deleteConfirmModal"
+        class="hidden fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      >
+        <div
+          class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 border border-stone-200 text-center"
+        >
+          <div
+            class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl"
+          >
+            ⚠️
+          </div>
+          <h3 class="font-serif text-lg text-stone-800 mb-2">
+            Antwort löschen?
+          </h3>
+          <p class="text-xs text-stone-500 mb-6 font-medium">
+            Möchtest du diese Antwort wirklich unwiderruflich löschen? Sie wird
+            auch aus der Cloud entfernt.
+          </p>
+          <div class="flex gap-2">
+            <button
+              onclick="closeDeleteModal()"
+              class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold py-3 rounded-xl text-xs transition"
+            >
+              Abbrechen
+            </button>
+            <button
+              id="confirmDeleteBtn"
+              class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl text-xs transition"
+            >
+              Ja, löschen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ELEGANT TOAST NOTIFICATION -->
+      <div
+        id="custom-toast"
+        class="fixed bottom-24 right-4 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 bg-stone-900/95 backdrop-blur-md text-white text-xs py-3 px-5 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/10"
+      >
+        <span id="toast-icon">✨</span>
+        <span id="toast-message">Nachricht</span>
+      </div>
+    </div>
+
+    <!-- FIREBASE AND CORE APP ENGINE (JS) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        signInWithCustomToken,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        deleteDoc,
+        onSnapshot,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+      // Global Variables
+      const appId =
+        typeof __app_id !== "undefined" ? __app_id : "wedding-rsvp-v2";
+      let db = null;
+      let isCloudConnected = false;
+      let rsvps = []; // Lokales Abbild der RSVPs (für schnelles Rendering und LocalStorage Fallback)
+
+      // 1. Initialisierung der Firebase-Verbindung
+      async function connectToDatabase() {
+        const indicator = document.getElementById("dbSourceIndicator");
+
+        if (typeof __firebase_config !== "undefined" && __firebase_config) {
+          try {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            db = getFirestore(app);
+
+            // Auth vor der Abfrage (Regel 3)
+            if (
+              typeof __initial_auth_token !== "undefined" &&
+              __initial_auth_token
+            ) {
+              await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+              await signInAnonymously(auth);
+            }
+
+            isCloudConnected = true;
+            if (indicator) {
+              indicator.innerText = "Online Cloud";
+              indicator.className =
+                "bg-green-100 text-green-800 text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full border border-green-200";
+            }
+
+            // Strict Paths (Regel 1) & Keine komplexen Abfragen (Regel 2)
+            const rsvpsCollection = collection(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "rsvps",
+            );
+            onSnapshot(
+              rsvpsCollection,
+              (snapshot) => {
+                rsvps = [];
+                snapshot.forEach((doc) => {
+                  rsvps.push({ id: doc.id, ...doc.data() });
+                });
+                updateAdminPanelList();
+              },
+              (error) => {
+                console.error(
+                  "Firestore-Synchronisation fehlgeschlagen, nutze Fallback:",
+                  error,
+                );
+                loadLocalData();
+              },
+            );
+          } catch (err) {
+            console.error(
+              "Firebase Setup fehlgeschlagen. Nutze Offline-LocalStorage:",
+              err,
+            );
+            setupFallbackStorage(indicator);
+          }
+        } else {
+          setupFallbackStorage(indicator);
+        }
+      }
+
+      function setupFallbackStorage(indicator) {
+        isCloudConnected = false;
+        if (indicator) {
+          indicator.innerText = "Offline Speicher";
+          indicator.className =
+            "bg-amber-100 text-amber-800 text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full border border-amber-200";
+        }
+        loadLocalData();
+      }
+
+      function loadLocalData() {
+        const data = localStorage.getItem("wedding_rsvps_fallback");
+        if (data) {
+          rsvps = JSON.parse(data);
+        } else {
+          rsvps = [];
+        }
+        updateAdminPanelList();
+      }
+
+      // Speichern einer neuen RSVP (Egal ob Cloud, LocalStorage & mit optionalem Google Sheet Sync)
+      window.saveRsvp = async function (rsvpData) {
+        const uniqueId = rsvpData.id || crypto.randomUUID();
+        rsvpData.id = uniqueId;
+        rsvpData.timestamp = new Date().toISOString();
+
+        // Google Sheets Anbindung (Absolut geräuschlos & im Hintergrund)
+        const googleSheetUrl = localStorage.getItem("google_sheet_webhook_url");
+        if (
+          googleSheetUrl &&
+          googleSheetUrl.startsWith("https://script.google.com")
+        ) {
+          try {
+            fetch(googleSheetUrl, {
+              method: "POST",
+              mode: "no-cors", // Verhindert CORS-Fehler bei Apps Script Weiterleitungen
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(rsvpData),
+            });
+          } catch (sheetErr) {
+            console.error(
+              "Google Sheets Synchronisation fehlgeschlagen:",
+              sheetErr,
+            );
+          }
+        }
+
+        if (isCloudConnected && db) {
+          // Strict Path Rule 1
+          const docRef = doc(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "rsvps",
+            uniqueId,
+          );
+          await setDoc(docRef, rsvpData);
+        } else {
+          // Offline Fallback
+          rsvps = rsvps.filter((item) => item.id !== uniqueId);
+          rsvps.push(rsvpData);
+          localStorage.setItem("wedding_rsvps_fallback", JSON.stringify(rsvps));
+          updateAdminPanelList();
+        }
+      };
+
+      // Löschen einer RSVP
+      window.deleteRsvp = async function (id) {
+        if (isCloudConnected && db) {
+          const docRef = doc(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "rsvps",
+            id,
+          );
+          await deleteDoc(docRef);
+        } else {
+          rsvps = rsvps.filter((item) => item.id !== id);
+          localStorage.setItem("wedding_rsvps_fallback", JSON.stringify(rsvps));
+          updateAdminPanelList();
+        }
+      };
+
+      // Generiere fiktive Testdaten zur Veranschaulichung
+      window.generateTestData = async function () {
+        const sampleData = [
+          {
+            id: "1",
+            firstName: "Sarah",
+            lastName: "Müller",
+            attendance: "ja",
+            hasCompanion: "ja",
+            companionName: "Thomas Müller",
+            diet: "vegetarisch",
+            dietDetails: "",
+            songRequest: "Coldplay - Sky Full of Stars",
+            message: "Wir freuen uns riesig auf eure Feier!",
+            timestamp: new Date().toISOString(),
+          },
+          {
+            id: "2",
+            firstName: "Andreas",
+            lastName: "Schmidt",
+            attendance: "ja",
+            hasCompanion: "nein",
+            companionName: "",
+            diet: "alles",
+            dietDetails: "",
+            songRequest: "Abba - Dancing Queen",
+            message: "Ich komme super gerne!",
+            timestamp: new Date().toISOString(),
+          },
+          {
+            id: "3",
+            firstName: "Julia",
+            lastName: "Wagner",
+            attendance: "nein",
+            hasCompanion: "nein",
+            companionName: "",
+            diet: "alles",
+            dietDetails: "",
+            songRequest: "",
+            message:
+              "Liebe Laura, lieber Max, ich wäre so gern gekommen, aber ich bin leider beruflich im Ausland.",
+            timestamp: new Date().toISOString(),
+          },
+        ];
+
+        for (const data of sampleData) {
+          await saveRsvp(data);
+        }
+        if (!isCloudConnected) {
+          loadLocalData();
+        }
+        window.showToast("Testdaten wurden generiert", "📊");
+      };
+
+      // Admin-Listen Update und Statistikberechnung
+      function updateAdminPanelList() {
+        const listContainer = document.getElementById("adminRsvpList");
+        if (!listContainer) return;
+
+        let yesCount = 0;
+        let noCount = 0;
+        let companionCount = 0;
+        let dietCount = 0;
+
+        listContainer.innerHTML = "";
+
+        if (rsvps.length === 0) {
+          listContainer.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-stone-400">Keine RSVPs vorhanden. Drücke "Testdaten" für Beispiele.</td></tr>`;
+          updateStats(0, 0, 0, 0);
+          return;
+        }
+
+        // Sortieren nach Datum im JS-Memory (Regel 2)
+        const sortedRsvps = [...rsvps].sort(
+          (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+        );
+
+        sortedRsvps.forEach((rsvp) => {
+          const isYes = rsvp.attendance === "ja";
+          if (isYes) {
+            yesCount++;
+            if (rsvp.hasCompanion === "ja") {
+              companionCount++;
+            }
+            if (rsvp.diet !== "alles") {
+              dietCount++;
+            }
+          } else {
+            noCount++;
+          }
+
+          const tr = document.createElement("tr");
+          tr.className =
+            "hover:bg-stone-50 transition border-b border-stone-100";
+
+          // Formatierter Name & Begleitung
+          const nameCell = `
+                    <div class="py-4 pl-2 font-medium text-stone-800">${escapeHtml(rsvp.firstName)} ${escapeHtml(rsvp.lastName)}</div>
+                    ${rsvp.hasCompanion === "ja" ? `<div class="text-xs text-stone-400 pl-2">Begleitung: ${escapeHtml(rsvp.companionName)}</div>` : ""}
+                `;
+
+          // Status Abzeichen
+          const statusCell = isYes
+            ? `<span class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full border border-green-200 font-semibold inline-block">Zusage</span>`
+            : `<span class="bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full border border-red-200 font-semibold inline-block">Absage</span>`;
+
+          // Diät/Essen
+          let dietText = "-";
+          if (isYes) {
+            if (rsvp.diet === "vegetarisch") dietText = "🌱 Veggie";
+            else if (rsvp.diet === "vegan") dietText = "🍃 Vegan";
+            else if (rsvp.diet === "allergie")
+              dietText = `⚠️ ${escapeHtml(rsvp.dietDetails)}`;
+            else dietText = "🥩 Klassisch";
+          }
+
+          // Musik
+          const songText = rsvp.songRequest
+            ? `🎵 ${escapeHtml(rsvp.songRequest)}`
+            : "-";
+
+          // Nachricht
+          const messageText = rsvp.message
+            ? `<div class="max-w-xs truncate" title="${escapeHtml(rsvp.message)}">${escapeHtml(rsvp.message)}</div>`
+            : '<span class="text-stone-300">-</span>';
+
+          tr.innerHTML = `
+                    <td class="py-3 pl-2">${nameCell}</td>
+                    <td class="py-3">${statusCell}</td>
+                    <td class="py-3 text-xs font-medium">${dietText}</td>
+                    <td class="py-3 text-xs italic">${songText}</td>
+                    <td class="py-3 text-xs">${messageText}</td>
+                    <td class="py-3 text-right">
+                        <button onclick="confirmDeleteRsvp('${rsvp.id}')" class="text-red-400 hover:text-red-600 p-2 transition" title="Löschen">
+                            <svg class="w-4 h-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </td>
+                `;
+          listContainer.appendChild(tr);
+        });
+
+        const totalGuests = yesCount + companionCount;
+        updateStats(totalGuests, yesCount, noCount, dietCount);
+      }
+
+      function updateStats(total, yes, no, diet) {
+        document.getElementById("statsTotal").innerText = total;
+        document.getElementById("statsYes").innerText = yes;
+        document.getElementById("statsNo").innerText = no;
+        document.getElementById("statsDiet").innerText = diet;
+      }
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // CSV Export-Funktion
+      window.exportToCsv = function () {
+        if (rsvps.length === 0) return;
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent +=
+          "Vorname;Nachname;Zusage;Begleitung;Name Begleitung;Essenswunsch;Allergiedetails;Songwunsch;Nachricht\n";
+
+        rsvps.forEach((rsvp) => {
+          const row = [
+            rsvp.firstName,
+            rsvp.lastName,
+            rsvp.attendance,
+            rsvp.hasCompanion,
+            rsvp.companionName || "",
+            rsvp.diet,
+            rsvp.dietDetails || "",
+            rsvp.songRequest || "",
+            rsvp.message ? rsvp.message.replace(/[\n\r]+/g, " ") : "",
+          ]
+            .map((val) => `"${val.replace(/"/g, '""')}"`)
+            .join(";");
+          csvContent += row + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Gästeliste_Hochzeit_Laura_Max.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.showToast("Gästeliste als CSV exportiert", "📥");
+      };
+
+      // Window OnLoad Start
+      window.onload = function () {
+        connectToDatabase();
+        initAudio();
+
+        // Google Sheets URL beim Laden in das Input-Feld eintragen
+        const sheetUrl = localStorage.getItem("google_sheet_webhook_url");
+        const sheetInput = document.getElementById("googleSheetUrlInput");
+        if (sheetUrl && sheetInput) {
+          sheetInput.value = sheetUrl;
+        }
+      };
+    </script>
+
+    <!-- INTERAKTIVITÄT & ANIMATIONS CODE -->
+    <script>
+      // 1. Audio-Synthesizer für Öffnungs-Klänge (Keine externen Abhängigkeiten)
+      let audioCtx = null;
+      let isMusicPlaying = false;
+
+      function initAudio() {
+        // Lazy-Init Audio bei der ersten Benutzerinteraktion
+      }
+
+      function playSfx(type) {
+        try {
+          if (!audioCtx)
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          if (type === "seal") {
+            // Wachs knackt
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(
+              80,
+              audioCtx.currentTime + 0.15,
+            );
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(
+              0.01,
+              audioCtx.currentTime + 0.15,
+            );
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+          } else if (type === "open") {
+            // Edles Gleiten
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(
+              600,
+              audioCtx.currentTime + 0.5,
+            );
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+          }
+        } catch (e) {
+          console.debug("Audio SFX konnte nicht wiedergegeben werden");
+        }
+      }
+
+      // Elegantes Toast System (Ersetzt unschöne Standard-Browser-Alerts)
+      window.showToast = function (msg, icon = "✨") {
+        const toast = document.getElementById("custom-toast");
+        const toastMsg = document.getElementById("toast-message");
+        const toastIcon = document.getElementById("toast-icon");
+        if (!toast || !toastMsg || !toastIcon) return;
+
+        toastMsg.innerText = msg;
+        toastIcon.innerText = icon;
+
+        toast.classList.remove(
+          "translate-y-10",
+          "opacity-0",
+          "pointer-events-none",
+        );
+        toast.classList.add("translate-y-0", "opacity-100");
+
+        setTimeout(() => {
+          toast.classList.remove("translate-y-0", "opacity-100");
+          toast.classList.add(
+            "translate-y-10",
+            "opacity-0",
+            "pointer-events-none",
+          );
+        }, 3500);
+      };
+
+      // Google Sheets Konfiguration speichern
+      window.saveGoogleSheetSettings = function () {
+        const input = document.getElementById("googleSheetUrlInput");
+        if (!input) return;
+        const url = input.value.trim();
+
+        if (url === "") {
+          localStorage.removeItem("google_sheet_webhook_url");
+          window.showToast("Verbindung zu Google Sheets wurde getrennt", "ℹ️");
+        } else if (url.startsWith("https://script.google.com/macros/s/")) {
+          localStorage.setItem("google_sheet_webhook_url", url);
+          window.showToast("Erfolgreich mit Google Tabelle verknüpft!", "📊");
+        } else {
+          window.showToast(
+            "Ungültige Web-App URL. Bitte überprüfe das Format.",
+            "❌",
+          );
+        }
+      };
+
+      // Musik Toggle
+      const audioBtn = document.getElementById("audio-toggle-btn");
+      const musicStatus = document.getElementById("music-status");
+      const musicIcon = document.getElementById("music-on-icon");
+
+      if (audioBtn) {
+        audioBtn.addEventListener("click", () => {
+          isMusicPlaying = !isMusicPlaying;
+          if (isMusicPlaying) {
+            musicStatus.innerText = "Lied läuft";
+            musicIcon.classList.remove("text-stone-400");
+            musicIcon.classList.add("text-gold-500", "animate-spin-slow");
+            // Simulierter Hochzeitsmarsch-Ton im Hintergrund
+            startCursiveSynth();
+          } else {
+            musicStatus.innerText = "Musik aus";
+            musicIcon.classList.remove("text-gold-500", "animate-spin-slow");
+            musicIcon.classList.add("text-stone-400");
+            stopCursiveSynth();
+          }
+        });
+      }
+
+      let synthInterval = null;
+      function startCursiveSynth() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [261.63, 329.63, 392.0, 523.25]; // Edler C-Dur Akkord Loop
+        let noteIdx = 0;
+
+        synthInterval = setInterval(() => {
+          if (!isMusicPlaying) return;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.frequency.setValueAtTime(notes[noteIdx], audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.8);
+          noteIdx = (noteIdx + 1) % notes.length;
+        }, 1000);
+      }
+
+      function stopCursiveSynth() {
+        if (synthInterval) {
+          clearInterval(synthInterval);
+          synthInterval = null;
+        }
+      }
+
+      // 2. Gatekeeper: Wachssiegel & Umschlag öffnen
+      const seal = document.getElementById("wax-seal");
+      const envelopeFlap = document.getElementById("envelope-flap");
+      const envelope = document.getElementById("envelope");
+      const card = document.getElementById("invitation-preview-card");
+      const wrapper = document.getElementById("envelope-wrapper");
+      const mainContent = document.getElementById("main-content");
+
+      if (seal) {
+        seal.addEventListener("click", () => {
+          playSfx("seal");
+
+          // Siegel verkleinern & zerbrechen
+          seal.style.transform = "translate(-50%, -50%) scale(0.1)";
+          seal.style.opacity = "0";
+
+          setTimeout(() => {
+            // Klappe öffnet sich nach oben
+            envelopeFlap.style.transform = "rotateX(180deg)";
+            envelopeFlap.style.zIndex = "15";
+            playSfx("open");
+
+            // Festliches Konfetti beim Öffnen
+            confetti({
+              particleCount: 150,
+              spread: 80,
+              origin: { y: 0.6 },
+              colors: ["#C5A880", "#F3EAD9", "#EADBC4", "#FFFFFF"],
+            });
+
+            setTimeout(() => {
+              // Karte gleitet majestätisch nach oben
+              card.style.transform = "translateY(-140px)";
+              card.style.zIndex = "35";
+
+              setTimeout(() => {
+                // Blende das gesamte Cover aus
+                wrapper.style.opacity = "0";
+                mainContent.classList.remove("hidden");
+
+                setTimeout(() => {
+                  mainContent.classList.add("opacity-100");
+                  mainContent.classList.remove("opacity-0");
+                  wrapper.style.display = "none";
+                  startCountdown();
+                  initScrollAnimations();
+                }, 500);
+              }, 1200);
+            }, 800);
+          }, 400);
+        });
+      }
+
+      // 3. Live Countdown
+      function startCountdown() {
+        const targetDate = new Date("Sep 12, 2026 14:00:00").getTime();
+
+        setInterval(() => {
+          const now = new Date().getTime();
+          const difference = targetDate - now;
+
+          if (difference < 0) return;
+
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          );
+          const minutes = Math.floor(
+            (difference % (1000 * 60 * 60)) / (1000 * 60),
+          );
+          const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+          document.getElementById("countdown-days").innerText = String(
+            days,
+          ).padStart(2, "0");
+          document.getElementById("countdown-hours").innerText = String(
+            hours,
+          ).padStart(2, "0");
+          document.getElementById("countdown-minutes").innerText = String(
+            minutes,
+          ).padStart(2, "0");
+          document.getElementById("countdown-seconds").innerText = String(
+            seconds,
+          ).padStart(2, "0");
+        }, 1000);
+      }
+
+      // 4. Scroll Reveal Engine
+      function initScrollAnimations() {
+        const reveals = document.querySelectorAll(".reveal-on-scroll");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        reveals.forEach((reveal) => observer.observe(reveal));
+      }
+
+      // 5. Lightbox Galerie
+      function openLightbox(src) {
+        const lightbox = document.getElementById("lightbox");
+        const img = document.getElementById("lightbox-img");
+        img.src = src;
+        lightbox.classList.remove("pointer-events-none", "opacity-0");
+        lightbox.classList.add("opacity-100");
+        img.classList.remove("scale-90");
+        img.classList.add("scale-100");
+      }
+
+      function closeLightbox() {
+        const lightbox = document.getElementById("lightbox");
+        const img = document.getElementById("lightbox-img");
+        lightbox.classList.add("pointer-events-none", "opacity-0");
+        lightbox.classList.remove("opacity-100");
+        img.classList.remove("scale-100");
+        img.classList.add("scale-90");
+      }
+
+      // 6. FAQ Accordion Toggle
+      function toggleFaq(btn) {
+        const panel = btn.nextElementSibling;
+        const icon = btn.querySelector("svg");
+
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+
+      // 7. Form-Verhalten (Zusage/Absage)
+      function toggleAttendanceFields(isAttending) {
+        const zusageOnly = document.getElementById("zusage-only-fields");
+        const companionInput = document.getElementById("companionName");
+        const yesLabel = document.getElementById("attendanceYesLabel");
+        const noLabel = document.getElementById("attendanceNoLabel");
+
+        if (isAttending) {
+          zusageOnly.style.display = "block";
+          yesLabel.classList.add("border-gold-400", "bg-gold-50/50");
+          noLabel.classList.remove("border-gold-400", "bg-gold-50/50");
+        } else {
+          zusageOnly.style.display = "none";
+          yesLabel.classList.remove("border-gold-400", "bg-gold-50/50");
+          noLabel.classList.add("border-gold-400", "bg-gold-50/50");
+          if (companionInput) companionInput.required = false;
+        }
+      }
+
+      function toggleCompanionFields(hasCompanion) {
+        const field = document.getElementById("companion-name-field");
+        const input = document.getElementById("companionName");
+        if (hasCompanion) {
+          field.classList.remove("hidden");
+          input.required = true;
+        } else {
+          field.classList.add("hidden");
+          input.required = false;
+          input.value = "";
+        }
+      }
+
+      function toggleDietOther(value) {
+        const field = document.getElementById("diet-other-field");
+        const input = document.getElementById("dietDetails");
+        if (value === "allergie") {
+          field.classList.remove("hidden");
+          input.required = true;
+        } else {
+          field.classList.add("hidden");
+          input.required = false;
+          input.value = "";
+        }
+      }
+
+      // 8. Formular absenden & RSVP erfassen
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitBtnText = document.getElementById("submit-btn-text");
+        submitBtnText.innerText = "Wird gesendet...";
+
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const attendance = document.querySelector(
+          'input[name="attendance"]:checked',
+        ).value;
+
+        let hasCompanion = "nein";
+        let companionName = "";
+        let diet = "alles";
+        let dietDetails = "";
+        let songRequest = "";
+
+        if (attendance === "ja") {
+          hasCompanion = document.querySelector(
+            'input[name="hasCompanion"]:checked',
+          ).value;
+          companionName = document.getElementById("companionName").value.trim();
+          diet = document.getElementById("diet").value;
+          dietDetails = document.getElementById("dietDetails").value.trim();
+          songRequest = document.getElementById("songRequest").value.trim();
+        }
+
+        const message = document.getElementById("message").value.trim();
+
+        const rsvpObject = {
+          firstName,
+          lastName,
+          attendance,
+          hasCompanion,
+          companionName,
+          diet,
+          dietDetails,
+          songRequest,
+          message,
+        };
+
+        try {
+          // Rufen die in Module definierte globale Speicherfunktion auf
+          await window.saveRsvp(rsvpObject);
+
+          // Feierlicher Konfetti-Schauer bei Zusage!
+          if (attendance === "ja") {
+            confetti({
+              particleCount: 150,
+              spread: 80,
+              origin: { y: 0.8 },
+              colors: ["#C5A880", "#D0DBCE", "#FFFFFF"],
+            });
+            window.showToast("Antwort & Zusage erfolgreich übermittelt!", "🎉");
+          } else {
+            window.showToast("Absage erfolgreich übermittelt.", "🥺");
+          }
+
+          // UI Zustand wechseln
+          document.getElementById("rsvpForm").classList.add("hidden");
+          document.getElementById("thankYouState").classList.remove("hidden");
+        } catch (err) {
+          console.error(err);
+          window.showToast("Fehler beim Übermitteln der RSVP.", "❌");
+        } finally {
+          submitBtnText.innerText = "Antwort absenden";
+        }
+      }
+
+      function resetFormState() {
+        const form = document.getElementById("rsvpForm");
+        if (form) form.reset();
+        toggleAttendanceFields(true);
+        toggleCompanionFields(false);
+        toggleDietOther("alles");
+
+        document.getElementById("rsvpForm").classList.remove("hidden");
+        document.getElementById("thankYouState").classList.add("hidden");
+      }
+
+      // 9. Admin Dashboard Panels & Passwortschutz
+      function toggleAdminPanel() {
+        const modal = document.getElementById("adminAuthModal");
+        document.getElementById("adminPasswordInput").value = "";
+        document.getElementById("adminAuthError").classList.add("hidden");
+        modal.classList.remove("hidden");
+      }
+
+      function closeAuthModal() {
+        document.getElementById("adminAuthModal").classList.add("hidden");
+      }
+
+      function verifyAdminPassword() {
+        const pw = document.getElementById("adminPasswordInput").value;
+        if (pw === "wedding2026") {
+          document.getElementById("adminAuthModal").classList.add("hidden");
+          document.getElementById("adminPanel").classList.remove("hidden");
+          window.showToast("Veranstalter-Verifizierung erfolgreich", "🔑");
+        } else {
+          document.getElementById("adminAuthError").classList.remove("hidden");
+        }
+      }
+
+      function closeAdminPanel() {
+        document.getElementById("adminPanel").classList.add("hidden");
+      }
+
+      // Elegant custom Modal zur Löschbestätigung (Ersetzt störendes window.confirm)
+      let deleteIdPlaceholder = null;
+
+      function confirmDeleteRsvp(id) {
+        deleteIdPlaceholder = id;
+        document
+          .getElementById("deleteConfirmModal")
+          .classList.remove("hidden");
+      }
+
+      function closeDeleteModal() {
+        document.getElementById("deleteConfirmModal").classList.add("hidden");
+        deleteIdPlaceholder = null;
+      }
+
+      // Listener für den Löschvorgang im Custom Modal
+      document
+        .getElementById("confirmDeleteBtn")
+        .addEventListener("click", async () => {
+          if (deleteIdPlaceholder && window.deleteRsvp) {
+            try {
+              await window.deleteRsvp(deleteIdPlaceholder);
+              window.showToast("Antwort erfolgreich gelöscht", "🗑️");
+            } catch (e) {
+              window.showToast("Fehler beim Löschen", "❌");
+            }
+          }
+          closeDeleteModal();
+        });
+    </script>
+  </body>
+</html>
